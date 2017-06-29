@@ -1,0 +1,334 @@
+- gitのコミットはスナップショットを取っている
+- gitの裏の処理
+  - git add
+    - ファイルにヘッダをつけて、ハッシュをつける：リポジトリに作成
+      - blobオブジェクトというらしい
+      - ハッシュのファイル名
+    - インデックス作成そのヘッダをつけたファイルへのインデックス
+  - git commit
+    - ファイル構成を表すツリーを作る：リポジトリに
+      - 管理しているファイルの情報
+      - １つのディレクトリに１treeファイルの模様
+    - commitの情報を作る：リポジトリに
+      - 親のコミットがあればその情報：変更履歴を為、後でたどれるようにする
+      - ツリー情報
+  - ものは.git/objectsの配下に入る
+  - git cat-fileというコマンドでいろいろなblobオブジェクトなどの中身が見える
+  - 最後のコミットの中身の表示
+    - git cat-file -p HEAD
+      tree acd75d1289b95787ecaab96c73fe1f3dbfa9cf67
+      parent ae682f61f39b5c364781cb179035ae534c56a326
+      author kiyodori <メールアドレス> 1493763216 +0900
+      committer kiyodori <メールアドレス> 1493763216 +0900
+    - これでtreeファイルの中身を見る
+      - git cat-file -p acd75d12：どうも先頭の文字列だけでよいみたい
+- .gitの中に
+  - objects:リポジトリの本体
+- ステージの存在
+  - コミットの準備の領域
+  - 一部のファイルだけ処理するため
+    - 全部はいらない
+- git commit -v
+  - 変更を内容を確認することができる
+  - EDITORが立ち上がる
+- コミットメッセージ
+  - １行目：変更の要約
+  - ２：空行
+  - ３：変更の理由
+- git diff --staged：ステージに上がっているものの変更を見れる
+- git log --oneline：一行で出る
+- git log -p ファイル名：特定のファイルのものだけ
+- git log -n コミット数：最近nのものだけ
+- git rm --cached ファイル名：ファイルを残したい場合
+  - gitの記録から削除する：リポジトリから消す
+- git mvは以下のコマンドの連続と同じ
+  - mv old new
+  - git rm old
+  - git add new
+- git remote add origin URL
+  - originという名前でURLのリモートリポジトリを登録する
+  - リモートリポジトリを普通originという慣例がある
+- git push リモート名 ブランチ名
+- git push -u origin master：とすると今度からgit push だけでOKとなる
+- aliasをつけられる。やったほうがよい。PC全体(--global)を推奨
+  - git config --global alias.ci commit
+  - git config --global alias.st status
+  - git config --global alias.br branch
+  - git config --global alias.co checkout
+- バージョン管理したくないファイルを設定
+  - .gitignoreに記載
+    - #行はコメント
+    - 指定したファイル
+    - dir/
+    - /*/*.cssなど
+- 変更の取り消し：ステージと同期させる
+  - git checkout -- ファイル名
+  - git checkout -- dir名
+  - --をつけているのはファイル/dirなのかブランチなのかを区別するため
+  - git checkout -- . ：全変更を取り消す
+- git add 御もとに戻すとき
+  - git reset HEAD ファイル/dir
+  - 全変更取り消し
+    - git reset HEAD .
+  - ワークツリーの変更は取り消されない
+    - なので、ワークツリーも戻す場合は
+      - git reset HEAD
+      - git checkoutが必要
+  - リポジトリから最新のものを取ってきてステージを上書きしている
+  - HEAD:最新のコミットの内容
+- 直前のコミットをやり直す
+  - git add
+    - 修正したいものを修正して、ステージに乗せる
+  - git commit --amend
+    - 現在のステージの内容でコミットをやり直す
+  - リモートにプッシュしたコミットのやり直しはNG
+- リモートのURLを表示
+  - git remote -v
+- リモートリポジトリは複数登録できる
+- フェッチ
+  - git fetch リモート名
+  - リモートからローカルリポジトリへ反映する
+  - ただしワークツリーには反映されない
+  - remotes/リモート/ブランチ　に入っている
+  - ワークツリーへの反映はgit marge
+- プル:margeまで一度にやりたい場合
+  - git pull リモート名　ブランチ名
+  - git pullでもOK
+- フェッチとプルの使い分け
+  - おすすめはフェッチ
+  - プルは注意が必要
+    - いまいるブランチにマージされる
+      - 違うブランチにいた場合分けが分からなくなる
+    - 注意すればOK
+- リモート名の変更
+  - git remote rename old_remote_name new_remote_name
+- リモート名の削除
+  - git remote rm リモート名
+- branchの仕組み
+  - ブランチはコミットを指したポインタ
+  - commitするとそのブランチ（ポインタ）が最新のcommitへ移動する
+  - ブランチもファイルで中身は最新のコミットIDが記録されてる
+  - .git/refsにある
+- HEAD：現在の作業しているブランチのポインタ（最新へのコミットへのポインタ）
+  - これもファイル
+  - .git/HEADにある
+- git branch -a:remoteも表示される
+- git log --oneline --decorate
+  - HEADやブランチがどのコミットを指しているかわかる
+- git checkout -b ブランチ名
+  - ブランチの作成と切り替えを一度にできる
+- マージ
+  - git merge ブランチ名
+  - git merge remote名/ブランチ名
+  - マージには３種類ある
+    - FastFoward:早送り
+      - masterの先に別ブランチを作り、マスターにマージした場合ただポインタを別ブランチを指すだけになる
+    - AutoMerge
+      - 基本的なマージ。枝分かれのマージ
+      - 新しいコミットが起きる
+        - コミットファイルは親のコミットを2つ指すことになる
+    - コンフリクト
+      - 同じファイルの同じ行を変更したとき
+      - git statusでconflictがおきたかわかる
+      - 解決の仕方
+        - 対象のファイルを修正
+          - <<<<HEAD：HEADの変更分
+          - >>>>マージするブランチ：別ブランチの変更分
+          - 最終的なファイルの内容を記載する
+          - <<<や>>>>や==などの記述を削除する
+        - git add/git commit
+- コンフリクトが起きにくくするための運用ルール
+  - 複数人で同じファイルを変更しない
+  - pullやmergeする前に変更中の状態をなくす
+    - commitやstashをしておく
+    - pullがマージができなくなる場合がある
+  - pullするときはpullするbranchに移動すること
+    - 今のbranchにマージしちゃうので
+- ブランチ名の変更
+  - git branch -m ブランチ名
+- ブランチの削除
+  - git branch -d ブランチ名：masterにマージされてない変更が残っている場合は削除できな
+    - 強制するときは -d ではなく -Dに
+- ブランチ開発運用の勧め
+  - masterはリリース用
+  - 開発はトピックブランチを作成
+- リモートブランチ
+  - リモートブランチは、remote/ブランチ名で参照
+  - git fetch すると、ローカルとは別のremote/～という別の定義のブランチとなる
+    - remote/は省略できる
+      - remote/origin/master -> origin/master
+- プルリクエスト
+  - 自分の変更したコードをリポジトリに取り込んでもらう機能
+    - 取り込む前にレビューするため
+  - 手順
+    - localのリポジトリにコミット後、githubへプッシュ
+    - プルリクエストを送る
+  - 詳細
+    - git push 後
+    - githubで
+      - pull requestのタブ
+      - compareをマージしてほしいpull_requestブランチとする
+      - create pull request
+        - メッセージを記載
+      - レビュー依頼
+        - Reviewersにその対象者の選択
+        - 依頼者を選択すると通知される
+      - レビュー側はpull requestのタブ
+        - Conversationでやり取りできる
+        - 問題がなければ同じ画面のMergeボタンを押す
+        - 修正内容の確認はFiles Changedで
+          - 該当行の＋ボタンで
+        - レビューで問題がなければ、Review Changesの中のApproveでなんかする
+- github flow
+  - github社のワークフロー
+    - branch→プルリクエスト→masterにマージ
+  - masterブランチは常にリリースできる状態
+  - 新開発はmasterから新しいブランチ
+  - 定期的にプッシュ
+    - 作業状況が分かるため
+  - masterにマージするためプルリクエストを
+    - 必ずレビューを受ける
+  - リリース
+    - すぐにリリース。テストとdeploy作業は自動化
+  - 利点
+    - 開発フローをシンプルにするため
+    - リリースされているものとmasterブランチが一致している
+      - 切り戻しなどが迅速
+- rebase
+  - 変更を統合する際に履歴をきれいに整える
+  - 変更の取り込みの一種
+  - git rebase ブランチ名
+  - 例：
+    - commit1
+      - commit2:master
+      - commit3:feature
+    - ↓
+      - commit 1
+        - commit2:master
+          - commit3':feature
+    - つまりcommit2の変更分をfeatureに取り込んだ
+    - また、コミットの線を一直線にしている（枝分かれではなく）
+    - 上記のコマンド
+      - git checkout feature
+      - git rebase master
+      - git checkout master
+      - git merge feature
+        - あたしくコミットは作成されず、fastforwardが行われる
+  - rebaseとmergeの違い
+    - mergeは別コミットが発生する
+    - mergeは履歴が枝分かれ
+    - rebaseは履歴が一直線
+  - rebaseの注意
+    - GitHubにpushしたcommitをrebaseするのはNG
+    - pushできない
+      - rebase後のものとGitHubでcommitの履歴情報が違うためCheckNGではじかれる
+      - git push -fは絶対NG
+        - GitHubの内容を上書きすると履歴が壊れるため
+    - pushしていないローカルの変更はrebaseを使い、pushした後はmergeをつかうのが
+  - 使い分け
+    - 運用方針次第
+    - merge
+      - conflictの解決が比較的簡単
+      - たくさんのmergeがあると履歴が複雑となる
+      - 作業の履歴を残したい場合はつかう
+    - rebase
+      - 履歴をきれいに保てる
+      - conflictの解決が若干面倒
+      - 履歴をきれいに残したい場合はつかう
+  - conflictの違い
+    - merge
+      - conflictは1回だけ
+    - rebase
+      - 各コミット事にconflictが起こる
+- mergeの際、FastFowardしないようにする：merge commitを作る
+  - git config --global merge.ff false
+  - 別のブランチのマージログを残すため
+- pullにはmerge型とrebase型がある
+  - merge型
+    - git pull remotename branchname
+      - git fetch -> git merge
+    - マージコミットが残るので記録を残したい場合
+  - rebase型
+    - git pull --rebase remotename branchname
+      - git fetch -> git rebase
+    - marge commitが残らない
+      - ただ最新を取ってきただけなのでmerge commitはある意味不要
+  - defaultでrebase型にする
+    - git config --global pull.rebase ture
+    - master branchだけ pull rebaseしたい場合は
+      - git config branch.master.rebase true
+- rebaseの変更履歴を修正
+  - commitをきれいに整えてからpushしたいとき
+- 複数のcommitをやり直す
+  - git rebase -i commitID
+  - git rebase -i HEAD~3
+    - -iは対話的リベース
+    - HEAD~：初めの親コミット。数値はその数分の親commit
+    - HEAD^：mergeした場合の2番目の親を指定する
+    - pick COMMITID コメント
+    - pick COMMITID コメント
+    - ...
+    - となるので
+    - ↓
+    - edit COMMITID
+    - pick COMMITID コメント
+    - とする.すると、pickはそのままcommitの内容を適用していく。editをしたところで止まり
+    - git commit --amendで修正
+    - git rebase --contirueでpickが適用されていく
+- commitの並び替え
+  - git rebase -i HEAD~3
+    - これで出力される順は一番下が最新
+      - git logは初めに最新が来る
+    - pick～の中で
+      - ファイルを修正して並び変える：コミットの並び替え
+      - 行を削除：コミットを削除
+- commitをまとめる
+  - git rebase -i HEAD~3
+  - pickの代わりにsquashとすると、直前のものとまとめる
+- commitを分割
+  - git rebase -i HEAD~3
+  - 分割するところをeditに。とまったら
+  - git reset HEAD^
+    - ステージングしてないところまで戻す(git addしていない)
+  - git add 分割１の対象
+  - git commit -m "分割1"
+  - git add 分割２の対象
+  - git commit -m "分割2"
+  - git rebase --continue
+- tag
+  - 分かりやすいタグ：リリース日のものとか
+  - git tag
+    - 多すぎるときはgit tag -l "***"これでfilterかけられる
+  - 注釈付き
+    - 基本こちらを
+    - git tag -a tagname -m "メッセージ"
+    - 誰がタグをつけたとか、注釈をつけられれる
+  - 軽量版
+    - git tag tagname
+    - tag名だけしかない
+  - 後からtagをつける
+    - git tag tagname commitID
+  - タグのデータ表示
+    - git show tagname
+  - リモートに送るには
+    - git push リモート名 branch名 tag名 一部だけ
+    - git push origin --tags 全tag
+- 作業を一時避難
+  - 作業の途中でcommitしたくないが、別branchで作業の必要
+  - git stash
+  - git stash save
+  - 変更したものを一時退避させる
+  - 避難した作業を確認する
+    - git stash list
+  - 避難したものの復元
+    - git stash apply：ワークのみ
+    - git stash apply --index：ステージの状況も復元
+    - 特定の作業
+      - git stash apply stash名
+        - 例：git stash apply stash@{1}
+        - stash名は{0},{1}...と続く
+  - 退避したものを削除
+    - 最新だけを削除：git stash drop
+    - 特定：git stash drop stash名
+    - 全部：git stash clear
+- 完

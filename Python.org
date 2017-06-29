@@ -1,3 +1,316 @@
+- 文字列
+  - row
+    - 文字をそのまま処理する
+    - print(r'c:\hoge\ge')
+  - 'py' 'thon'
+    - →'python'
+    - 文字列同士の結合
+    - ただ、＋で連結したほうが迷わない
+      - 変数 文字列はNG
+  - スライス
+    - 範囲の指定で範囲外をendとしたばい、エラーとならず範囲に入ったものが抽出される
+  - 変更はできない
+    - あたらしい文字列を作る
+- リスト
+  - コピー
+    - list[:]
+  - squares + [1,2,3,4]としても、squaresは変更されない
+    - squaresはリスト
+  - 文字列は変更できなかったがリストは変更できる
+  - list.append(追加するもの)で追加
+    - 破壊的操作
+  - list[:]=[]とすると、空になる
+- print関数('value is',i)
+  - print('value is',i)
+    - 値が1空白で連結される
+  - print(b,end=',')
+    - 改行文字の代わりに,になる
+- input関数
+  - 引数に出力する文字列をうけ、入力待ちになる
+    - x = int(input("please enter on integer:"))
+- 条件の且つ→ && ではなく and
+- 否定：not.!ではない
+  - not a < b
+- iterable:range(5)->range(0,5)->[0,1,2,3,4]
+- pass
+  - 意図的に何もないことを示せる
+    - def initlog():
+      pass
+    - class MyClass:
+      pass
+- 関数
+  - returnを指定していない場合Noneが返却される
+  - デフォルト値
+    - 関数が定義されたときに値が決まる
+      - i=5
+      - def f(arg=i):
+      - i=6
+      - この場合fのargは5になる
+    - def f(a,L=[]):
+          L.append(a)
+          return L
+      print(f(1))->[1]
+      print(f(2))->[1,2]
+      print(f(3))->[1,2,3]
+      となる。定義時に一回初期化L=[]され、保持し続ける...
+      - もし一般的なイメージで処理されるのであれば
+        - def f(a,L=None):
+              if L is None: #Lが渡されてなければ
+                  L=[]        #初期化
+              L.append(a)
+              return L
+  - 引数を指定して呼び出し
+    - 順番ごとに関数のパラメータに定義するのではなく、引数のパラメータを直接指定して呼び出せる
+    - 順番は関係なくなる
+      - call(key=hogege)
+  - 可変長引数
+    - 可変長引数は、キーワード引数の前になくてはならない
+      - def concat(*args,sep='/')
+    - 普通の引数と可変長ならば、最後に
+  - 引数リストのアンパック
+    - list(range(2,3))をlist(range([1,3]))みたいに渡したいが、エラーとなる
+      - rangeは整数値をわたされる
+      - arg=[1,2,3,]
+      - list(range(*arg))でOK
+    - ディクショナリ型の場合は**argでわたす
+  - lambda式
+    - def make_incrementor(n):
+      return lambda x:x+n
+      f=make_incremantor(42) nを42
+      f(0)　xを0
+      こんな感じで関数の挙動を動的にかえられる
+    - 超簡単に終了....
+  - ドキュメンテーション文字列
+    - def myfunc():
+      """this fuction....
+      hoge
+      hagehgoe
+      """
+      pass
+    - myfunc.__doc__
+      - でその説明を表示
+  - annotation
+    - ふつうは型を記載しないが、
+    - def f(ham: str, eggs: str) -> str:
+    - f.__anotations__ で参照：ディクショナリ型でリターン値や引数の値をとれる
+    - ただし、f(1)とか渡しても普通に呼び出しができる
+      - 型チェックとかは実施されない
+- リスト
+  - count(検索対象):検索対象がリストにいくつ含まれるか
+  - insert(index,挿入対象)
+  - remove(削除対象):前のほうから１つ削除
+  - reverse():逆順
+    - リストのコピーではなく、そのものの順を変更する
+  - sort:昇順
+  - pop:最後から値を取り出す
+    - そしてもともとのListからは削除される
+  - append:追加
+  - Queの実装はinsert,popを使うと速度がNGらしいので、collectionsモジュールのdequeを使う
+    - quere = deque["...."]
+      - append
+      - popleft:先頭から取りだす
+  - Listの内包表記
+    - リストの生成を簡単にできる
+      - [x**2 for x in range(10)]
+    - 例：
+      - combs=[]
+      - for x in [1,2,3]:
+        - for y in [3,1,4]:
+          - if x!= y:
+            - combs.appand((x,y))
+      - ↓以下と同じ
+      - [(x,y) for x in [1,2,3] for y in [3,1,4] if x != y]
+    - 例：
+      - vec = [-4,-2,0,2,4]
+      - [x*2 for x in vec] 値の＊２
+      - [x for x in vec if x >= 0]　０以上なら入れる
+      - [abs(x) for x in vec] :絶対値
+    - 例：
+      - [(x,x**2) for x in range(6)]
+    - 例：フラットにする
+      - vec=[[1,2,3],[4,5,6],[7,8,9]]
+      - [num for elem in vec for num in elem]
+        - vecから[1,2,3]を取り出して右のelemに入る
+        - 右のfor分で1つずつ取り出してnumにはいりリストになる
+    - 例：
+      - from math import pi
+      - [str(round(pi,i)) for i in range(1,6)]
+    - 例：
+      - matrix=[[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+      - これの行列とみたてて
+      - 縦から横へ変換
+        - [[row[i] for row in matrix] for in range(4)]
+          - 最初右のforが動く
+        - list(zip(*matrix))
+          - リストだがほぼ同じ動き
+  - del
+    - 値の削除
+    - del a
+      - 変数が定義されていない状態になる
+    - del a[:]
+      - リストが空[]と同じ
+- タプル
+  - t=12321,321312,'sfs'
+    - でもタプルを定義できる
+  - 一つの値しか持たないものを定義するときは
+    - t=1232,
+  - ０のタプル
+    - empty = ()
+  - アンパッキング
+    - t = 1,2,3,4
+    - v,w,x,y = t
+      - これで代入
+- 集合:set
+  - 順序がない
+  - 重複がない
+  - basket = {'a','b','c','a'}
+    - →{'b,'a','c'}
+  - inで含まれているか確認
+  - 0のset
+    - empty = {}
+      - これではない。Dictionary型になっている
+    - これが正解
+      - empty = set()
+  - a = set('abaababababaab')
+    - a→{'a,'b'}
+  - 集合演算
+    - set同士のaとbで
+      - a - b 差集合
+      - a | b 和集合
+      - a & b 積集合
+      - a ^ b どちらか含まれる
+  - a = {x for x in 'abracatabra' if x not in 'abc'}
+    - abcではないものがaのsetとなる
+      - a →　{'r','d'}
+- 辞書
+  - list(dic.keys())
+    - キーのリスト
+  - inでキーがあるか調べられる
+  - list(dic.values())
+    - 値のリスト
+  - 空
+    - dic = {}
+  - dic['hoge']=aaa
+    - 無ければ作られ、{'hoge':'aaa'}
+  - dict([('sape',44334),('guido',2332)]
+    - {'guido':2332,'sape':44334}
+  - {x: x**2 for x in (2,4,6)}
+    - {2:4,4:16,6:36}
+  - dict(sape=232,guido=4343,jack=2332)
+  - for k,v in dic.items(): items()でkey,valueを取り出せる
+    - print(k,v)
+- ループで便利な関数
+  - for i ,v in enumerate(['tic','tac','toe']):
+    - print(i,v) iはインデクス。vは値でとれる
+  - question=['name','quest']
+  - answers=['lancelog','the holy grail']
+  - for q a in zip(question,answers):
+    - print(q a) zipで複数リストから同時にとれる
+  - for i in reversed(range(1,10,2)):
+    - 逆順出力
+  - sorted
+    - ソート
+- Nan:Not a Number
+- モジュール
+  - from ～ import *
+    - import *は推奨しない
+- パッケージ
+  - __init__.pyというのがパッケージ配下では必要らしい
+  - 名前空間
+  - import パッケージ名.モジュール名
+  - from パッケージ名 import モジュール名
+  - from パッケージ名.モジュール名 import 関数名
+- 例外
+  - try:
+    - この中はエラーが発生する処理など
+  - except ～Error:
+    - 例外が発生したとき
+  - else:
+    - 例外が出ないときは実行されない
+  - 複数のErrorを捕捉する場合はタプルで渡す
+    - except (RuntimeError,TypeError,NameError):
+  - エラーの参照
+    - except OSError as err:
+  - except:だけ書くと、どんな例外でも捕捉する
+  - 例外発生時は関数のコール順を上たどる
+    - 例外が発生した直後のコードは処理されない
+  - 例外を起こす
+    - raise NameError('message')
+    - exceptの中で捕捉したErrorを投げるには以下
+      - except NameError:
+        - raise
+  - try構文で必ず実行される
+    - try:
+    - finally:
+    - exceptやelseの処理の後にfinallyが実行される
+      - exceptで捕捉しなかった例外はfinallyの後にどこかで捕捉されるかエラー出力される
+- スコープ
+  - def scope_test():
+    - def do_local():
+      - spam = 'local spam'
+    - 
+    - def do_nonlocal():
+      - nonlocal spam #ローカルではなく、外側のスコープとなる
+      - spam = 'nonlocal spam'
+    - 
+    - def do_global():
+      - global spam #globalスコープの定義
+      - spam = 'global spam'
+    - 
+    - spam = 'test spam'
+    - do_local()
+    - print(spam) #'test spam'
+    - do_nonlocal()
+    - print(spam) #'nonlocal spam'
+    - do_global()
+    - print(spam) #'nonlocal spam'
+    - 
+  - if __name__ =='__main__':
+    - print spam #'global spam'
+- class
+  - インスタンス化
+    - x = MyClass()
+  - インスタンス変数のアクセス
+    - x.インスタンス変数
+  - コンストラクタ?
+    - class MyClass:
+      - def __init__(self,param1,param2):
+        - self.data = [] #selfは自分自身。インスタンス変数の宣言＋初期化
+        - self.p1=param1
+        - self.p2=param2
+      - 
+      - i = 12345 #クラス変数
+      - 
+      - def f(self):
+        - return 'hello'
+      - 
+    - 
+    - x = MyClass()
+    - x.data.appand('a')
+    - 
+  - インスタンス変数の追加を動的にできる
+    - x.未定義の変数=値
+      - x = MyClass()
+      - x.counter = 1
+      - print(x.counter)
+      - del x.counter #これを削除もできる
+  - インスタンス変数のメソッドを別変数に代入できる
+    - x = MyClass()
+    - xf = x.f
+  - インスタンスメソッドの呼び出し
+    - x = MyClass()
+    - print(MyClass.f(x)) #xはfのselfとなる
+    - xf() #この呼び出し時にはselfは勝手に補われるらしい
+  - クラス変数
+    - MyClass.iで参照できる
+    - この時はx.iは違うものとなる
+      - x = MyClass()
+      - y = MyClass()
+      - x.i = 23434 #クラス変数でははなく、インスタンス変数が追加された
+      - print(x.i) #23434
+      - print(y.i) #12345
+      - del x.i #インスタンス変数iを削除
+      - print(x.i) #12345 #クラス変数を参照する
 - 文字列フォーマット
   - 'a' + 'b'
     - 'ab'

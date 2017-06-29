@@ -1078,9 +1078,70 @@
         - 日ごとの平均の変動値
       - sigama = rets.std()['GOOG']
         - 1日の１年間の変動の標準偏差
-      - def stock_monte_carlo(start_price, days, mu, sigma):
+      - def stock_monte_carlo(start_price, days, mu, sigma): #これは資料にあるブラウン運動モデルの関数
         - price = np.zeros(days)
         - price[0] = start_price
-        - shock = np.zeros(days)
+        - shock = np.zeros(days) #shock:資料に説明あり　数式の一部の事らしい下記driftも同じ
+        - drift = np.zeros(days)
+        - for x in range(1, days):
+          - shock[x] = np.random.nomal(loc=mu*dt, scale=sigma * np.sqrt()) #正規分布に従う乱数
+          - drrft[x] = mu * dt
+          - price[x] = price[x-1] + (price[x-1] * (drift[x]+shock[x])) #ひとつ前のデータをもとに株価の計算
+        - return price
         - 
-
+        - start_price = GOOG.iloc[0,5] #最初の価格は最初のAdj Closeの値
+        - for run in range(5): #5回ほど１年後の株価を計算する
+          - plt.plot(stock_monte_carlo(start_price, days, mu ,sigma))
+        - 
+        - 
+        - runs = 10000 #10000回シミュレーション
+        - simulations = np.zeros(runs) #結果のSTORE先
+        - np.set_printoptions(threshold=5)
+        - for run in range(runs):
+          - simulations[run] = stock_monte_carlo(start_price, days, mu ,sigma)[days-1]
+        - plt.hist(simulations,bins=200)
+        - 上位1％を見積もる
+        - q = np.percentile(simulations,1)
+        - plt.hist(simulations, bins=200)
+        - plt.figtext(0.6, 0.8, s='Start price: {:0.2}.format(start_price))
+        - plt.figtext(0.6, 0,7, 'mean final price: {:0.2}.format(simulations.mean()))
+        - plt.figtext(0.6, 0.6, 'ValueAtRisk(0.99): {:0.2f}.format(start_price-q)) #この値が損する額
+        - plt.figtext(0.15, 0.6, 'q(0.99): {:0.2f}'.format(q)) #上位1%の境目の価格
+        - plt.axvline(x=q, linewidth=4, color='r')
+        - ※あまりよくわからなかったので後で再度やったほうが良いかもしれない
+- 66:選挙の解析
+  - 世論調査のデータと、寄付のデータ２つで解析をする
+  - import pandas as pd
+  - from pandas import Series, DataFrame
+  - import numpy as np
+  - import matplotlib.pyplot as plt
+  - import seaborn as sns
+  - %matplotlib inline
+  - request:便利なHTTP Client
+  - StringIO:これも便利な何か
+  - import requests
+  - from io import StringIO
+  - url = 'http://elections.huffingtonpost.com/pollster/2012-general-election-remney-vs-obama.csv'
+  - source = requests.get(url).text
+  - poll_data = StringIO(source) #ファイルのように扱える
+  - poll_df = pd.read_csv(poll_data) #DataFrame作成
+  - poll_df[ [[['Pollster','Partisan','Affiliation']]] ].sort('Pollster').drop_duplicates()
+    - 各党の調査の主体になっている機関でソート
+    - afficeationに支持政党
+  - 調査対象に政党色があることを調べる
+  - sns.countplot('Affiliation', data=poll_df)
+    - ほとんど中立の立場が多い
+  - sns.countplot('Affiliation', data=poll_df, hue='Population', order=['Rep','Dem','None'])
+    - Population:調査対象
+  - それぞれの支持がどれぐらい集まっていたか
+  - avg = pd.DataFrame(poll_df.mean())
+  - avg.drop('Number of Observations', axis=0,inplace=True)
+    - Number of Observationsはゴミみたいなので削除する
+  - std = pd.DataFrame(poll_df.std())
+  - std.drop('Number of Observations', axis=0,inplace=True)
+  - avg.plot(yerr=std, kind='bar', legend=False)
+    - 棒グラフにerrバーが付く
+  - データをまとめておく
+  - poll_avg = pd.concat([avg,std], axis=1)
+  - poll_avg.columns = ['Average', 'STD']
+  - 

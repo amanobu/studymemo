@@ -1031,5 +1031,56 @@
       - 数字だけで判断するのは気を付けなければならない
         - 傾きだけじゃわからない。多少正なら、１とはんだん？
         - 資料参照
-    - 
+  - 複数の会社比較
+    - sns.pairplot(tech_rets.dropna())
+      - 対角線上は同じ会社
+    - returns_fig = sns.PairGrid(tech_rets.dropna())
+    - returns_fig.map_upper(plt.scatter, color='purple') #スキャッタープロット
+    - returns_fig.map_lower(sns.kdeplot, cmap='cool_d') #カーネル密度推定
+    - returns_fig.map_diag(plt.hist, bins=30)
+    - ↑グラフの表示場所の変更
+    - sns.heatmap(tech_rets.corr(), annot=True)
+      - 日々の変動との相関
+      - 相関が高い！　どっかの会社があがれば、あがる
+  - 株式リスク解析
+    - リスクとリターンの図示
+    - rets = tech_rets.dropna()
+      - nanを取り除く
+    - plt.scatter(rets.mean(),rets.std(), alpha=0.5, s=np.pi*20)
+      - 横が期待される収益：リターン
+      - 縦は株価の変動標準偏差：リスク
+    - plt.ylim([0.01,0.025])
+      - 縦軸のサイズ
+    - plt.xlim([-0.005,0.01])
+      - 横
+    - plt.xlabel('Expeced returns')
+    - plt.ylabel('Risk')
+    - 図に説明を追加する
+    - for label, x, y, in zip(rets.columns, rets.mean(), rets.std()):
+      - plt.annotate(label, xy=(x,y), xytext=(0,50), textcoords = 'offset points',ha='right',va='bottom', arrowprops=dict(arrowstyle='-', connectionstyle='arc3')) #図にアノテーションを追記する
+    - リスクの見積もり
+      - Value at Risk
+        - sns.distplot(AAPL['Daily Return'].dropna(), bins=100)
+          - 日々のリターンが変化したか？という事の図
+      - パーセンタイル
+        - rets['AAPL'].quantile(0.05)
+        - この返り値
+          - ちいさいほうから5%が
+      - この辺が意味がわからない★
+      - 
+      - １年後の株価を予測する：ブラウン運動
+        - ランダムな動きの積み重ねのモデル
+        - 乱数を使ってシミュレーションをする事をモンテカルロ法という
+        - 細かいことは資料にあり
+      - days = 365
+      - dt = 1/days
+      - mu = rets.mean()['GOOG']
+        - 日ごとの平均の変動値
+      - sigama = rets.std()['GOOG']
+        - 1日の１年間の変動の標準偏差
+      - def stock_monte_carlo(start_price, days, mu, sigma):
+        - price = np.zeros(days)
+        - price[0] = start_price
+        - shock = np.zeros(days)
+        - 
 

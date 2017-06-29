@@ -1,0 +1,39 @@
+- 文字列フォーマット
+  - 'a' + 'b'
+    - 'ab'
+  - 'a' 'b'
+    - 'ab'
+  - '{0} and {1}'.format('spam','eggs')
+  - '{key1} {key2}'.format(key1='sapm',key2='eggs')
+  - '{0:.3f}'.format(math.pi)
+    - 3.142
+  - '{} {}'.format('1','2')
+  - Dictionaryの場合
+    - table={'Sjoerd':4127,'Jack':4098,'Dcab':832423}
+      - 'Jack: {0[Jack]:d}; Sjoerd: {0[Sjoerd]:d}; Dcab: {0[Dcab]:d}'.format(table)
+      - 'Jack: {Jack:d}; Sjoerd: {Sjoerd:d}; Dcab: {Dcab:d}'.format(**table)
+- ファイルの読み書き
+  - f = open('workfile','w')
+    - wは上書き専用。なければ作られる
+  - f.write('srings\n')
+    - 返り値は書き込まれた文字数
+  - f.close()
+  - f = open('workfile','r')
+  - f.readline()
+    - １行読み込まれる
+    - ファイル末端の場合は''が返却される
+  - for line in f:
+    - print(line, end='') #改行コードが元々含まれている為、end=''が無いと無駄に改行される
+  - f.close()
+  - f = open('workfile','r+') #読み書き
+  - close忘れないために以下で
+    - with open('workfile','r') as f:
+      - read_data=f.read()
+  - f.closed #メソッドじゃない。close出来ているかのフラグ
+- 標準lib
+  - os
+    - os.getcwd() #pwd
+    - os.chdir('/tmp') #cd
+    - os.system('ls -la') #コマンド実行
+    - dir(os)
+      - osが持っている関数が出力され

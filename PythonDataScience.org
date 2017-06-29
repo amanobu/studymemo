@@ -1,5 +1,5 @@
 * Python Data Science
-- section3:numpyアレイ
+- 3～:numpyアレイ
   - plt.imshow(array)
     - ヒートマップみたいなものを表示させる
   - plt.colorbar()
@@ -42,6 +42,71 @@
   - np.savetxt(~)
     - text形式で保存される
     - np.loadtxt
+  - アレイ
+    - import numpy as np
+    - np.array(リスト)
+    - shape
+      - 行列の形式
+    - dtype
+      - データ型
+      - すべて同じ型ではないとＮＧ
+    - np.eye
+      - 単位行列
+    - np.empty(*)
+    - np.ones((*,*))
+    - np.arange(5,50,2)
+  - アレイの添え字
+    - arr = arange(0,11)
+    - arr[8]
+    - arr[1:5]
+    - arr[0:5]=100
+      - index0~4は100が代入
+    - slice_arr = arr[0:6]
+    - slice_arr[:]=99
+      - こうすると元々のarrも99が0~6まで代入される
+      - 参照の為
+      - そのようにならないためにはコピーする
+        - arr.copy()
+    - arr2d=np.array([[5,10,15],[20,25,30],[35,40,45]])
+    - arr2d[1]→[20,25,30]
+    - arr2d[1][0]→20
+      - arr2d[1,0]でも同じ
+    - arr2d[:2,1:]
+      - [ [10,15][25,30] ]
+    - arr2d[2,:]はarr2d[2]と同じ
+    - 
+    - arr2d=npzeroz((10,10))
+    - arr_length = arr2d.shage[1]
+    - for i in range(arr_length):
+      - arr2d[i]=i #各行がその添え字で上書きされる
+      - 
+    - この状態で
+      - arr2d[ [2,4,5,6] ]
+        - これでその行だけとってこれる
+        - 順番も変えられる
+  - 行と列の入れ替え
+    - arr=np.arange(9).reshape(3,3)
+    - 転置:以下同じ
+      - arr.T
+      - arr.transpose()
+        - arr.transpose((行,列)):arr.transpose(1,0)で転置
+          - arr.swapaxesってのもある
+    - np.dot():行列のかけ算
+    - 3D
+      - arr3d=np.arange(12).reshape((3,2,2))
+      - これもおなじく transposeを使える(*,*,*)引数が増える
+  - アレイ計算
+    - arr=np.arange(11)
+    - np.sqrt(arr)
+    - np.exp(arr)
+    - 
+    - A=np.random.randn(10)
+      - 正規分布に従う乱数
+    - B=np.random.randn(10)
+    - np.add(A,B)
+      - 各要素毎の加算
+    - np.maximum(A,B)
+      - 各要素で大きい方を返す
 - 14:pandas入門:Seriase
   - import pandas as pd
   - from pandas import Series
@@ -95,6 +160,88 @@
     - 列が消せる
   - DictoryからDataFrameを作れる
     - DataFrame(dictory)
+- 16:DataFrameやSeriesのindex
+  - my_ser = Series([1,2,3,4],index=['A','B','C','D'])
+  - my_ser
+    - A 1
+    - B 2
+    - ...
+  - my_index = my_ser.index
+  - my_index[0]
+    - 'A'
+  - my_index[2:]
+    - Index(['C,','D'],dtype=object)
+  - インデックスは基本てきには変更不可
+    - my_index[0] ='Z'
+    - これはNG
+- 17:indexを変更する
+  - ser1 = Series([1,2,3,4],index = ['A','B','C','D'])
+  - ser2 = ser1.reindex(['A','B','C','D','E','F'])
+    - indexの再構築
+    - E,Fは値が内のでNanが割り当てられる
+  - ser2.reindex(['A','B','C','D','E','F'],fill_value=0)
+    - 新しいものに値を埋める：この場合0
+  - ser3.Series(['USA','Mexico','Canada'],index=[0,5,10])
+  - ser3.reindex(range(15),method='ffill')
+    - 本来Nanの値が値を埋める
+    - ffillは前にむかって埋める問うことで、0の値を採用して1~4を埋める
+  - dframe = DataFrame(randn(25).reshape(5,5),index=['A','B','D','E','F'],columns=['col1','col2','col3','col4','col5'])
+    - Cがないのは意図的
+    - new_index = ['A','B','C','D','E','F']
+    - dframe2 = dframe.reindex(new_index)
+      - Cが追加されて、値が無し
+    - new_columns = ['col1','col2','col3','col4','col5','col6']
+      - col6が新しい
+      - dframe2.reindex(columns=new_columns)
+        - 列が追加された値はNan
+    - dframe.ix(new_index,new_columns)
+      - 行と列の付け替えが一発でできる
+- 18:行の列の削除
+  - ser1 = Series(np.arange(3),index=['a','b','c'])
+  - ser1.drop('b')
+    - bを削除
+  - DataFrameでも同じ
+    - dframe.drop('index名')
+  - 元々のデータは削除されていない
+  - 列の削除
+    - dframe.drop('列名',axis=1)
+      - axis=1は列という意味
+      - 行の削除の時はaxis=0が省略されている
+- 19:データの取り出し
+  - ser1 = Series(np.arange(3),index=['A','B','C'])
+  - ser1['B']
+    - 1
+  - ser1[1]
+    - 0番目がAで、1番目がBで....
+  - ser[0:3]とかも
+  - ser[ ['A','B'] ]
+  - ser[ser1 > 2] 条件を入れられる
+    - ser[ser1 > 2]　= 新しい値
+  - 
+  - dframe = DataFrame(np.arange(25).reshape((5,5)),index=['A','B','D','E','F'],columns=['col1','col2','col3','col4','col5'])
+  - dframe['B']　列
+  - dframe[ [ 'B','C'] ] 複数
+  - dframe[ dframe['C'] > 7] 条件式も
+  - dframe>10
+    - 各要素の条件式に従ったTrue,Falseがかえる
+  - dframe.ix['col1']
+    - シリーズがかえる
+  - dframe[1]
+- 20:形が違うデータの計算
+  - ser1  = Series([0,1,2],index=['A','B','C'])
+  - ser2  = Series([3,4,5,6],index=['A','B','C','D'])
+  - ser1+ser2
+    - DはNan
+  - dframe1 = DataFrame(randn(4).reshape(2,2),index=list('AB'),columns=['NYC','LA'])
+  - dframe2 = DataFrame(randn(9).reshape(3,3),index=list('ABC'),columns=['NYC','SF','LA'])
+  - dframe1+dframe2
+    - 共通するデータがある場合以外はNan
+    - これを避ける為には
+      - dframe1.add(dframe2,fill_value=0)
+        - Nanのところがうまる
+  - ser3 = dframe2.ix[0]
+    - 0行めを取得
+  - dframe2 - ser3
 - 21:データの並び替え
   - ser1 = Series(range(3),index=['C','A','B'])
   - ser1.sort_index()　indexの値でソート
@@ -786,3 +933,103 @@
     - 実行してみると判るがnanがある
       - seaboanなどのフレームワークはnanを意識させないようになっている
     - 時々nanを意識しないと合計などがおかしくなると思う
+  - 家族属性
+    - titanic_df['Alone'] = titanic_df.Parch + titanic_df.SibSp
+      - Parch：両親or子供と一緒だったか（なにか値があれば
+      - SibSp：兄弟姉妹と一緒か（なにか値があれば
+    - titanic_df['Alone'].loc[titanic_df['Alone']>0] = 'With Family'
+    - titanic_df['Alone'].loc[titanic_df['Alone']==0] = 'Alone'
+      - ここでエラーがおきるかもしれないが問題ないらしい
+      - 0よりおおきければ家族と、0ならひとり
+    - sns.countplot('Alone' ,data = titanic_df, palette = 'Blues')
+      - 単身者が多かったことが
+  - 生存率
+    - titanic_df.df['Survivor'] = titanic_df.Survived.map({0:'no',1:'yes})
+      - 0は未生存、1は生存
+      - sns.countplot('Survivor', data = titanic_df, plalette = 'Set1')
+    - 客室のランクと生存者の関係
+      - sns.factplot('Pclass', 'Survived', data = titanic_df, order=[1,2,3])
+        - 1等客室の生存が高い
+    - 女性や子供を先にというポリシーはどうなんだ？3等は圧倒的に男がおおい
+    - sns.factplot('Pclass', 'Survived', hue='person', data = titanic_df, order=[1,2,3],aspect=2)
+      - 男性は生存率が低い
+      - 女性と子供に関しては1等も2頭もあまり変わらない
+      - 3等は全体的に生存率が低い
+    - 生存率と年齢の関係
+      - sns.lmplot('Age', 'Survived', data = titanic_df)
+        - 高齢になるほど生存率が下がっている
+      - sns.lmplot('Age', 'Survived', hue='Pclass' data = titanic_df, hue_order=[1,2,3])
+        - やっぱり1等が一番高い
+      - generations = [10,20,40,60,80]
+      - sns.lmplot('Age', 'Survived', hue='Pclass' data = titanic_df, hue_order=[1,2,3], x_bins=generations)
+        - 年代ごとにプロットして、標準偏差を縦棒で書いてくれる
+          - 80代の高齢の生存率がとびぬけている
+      - sns.lmplot('Age', 'Survived', hue='Sex' data = titanic_df, x_bins=generations)
+        - 性別で分類
+        - 女性は年齢が上がるごとに生存率が上がっていた
+        - 80代の男が生存率が高い
+  - まとめ
+    - hue（層別化）は非常に役に立つ
+    - ゴミが時々あるので削除する必要がある
+    - ほかの疑問もぜひやってみて
+- 60～株式市場のデータ解析
+  - pandasはこんな金融情報を扱うために作られたらしい
+  - 時系列データの扱いが主
+  - import pandas as pd
+  - from pandas import Series, DataFrame
+  - import numpy as np
+  - import matplotlib.pyplot as plt
+  - import seaborn as sns
+  - sns.set_style('whitegrid') #背景
+  - %matplotlib inline
+  - from pandas.io.data import DataReader
+    - アメリカの株式市場の株価は対応。日本はイケてないらしい
+  - from datetime import datetime
+  - tech_list = ['AAPL', 'GOOG', 'MSFT', 'AMZN']
+    - 日本は４桁のコードだが、アメリカは上のようなもの
+  - end = datetime.now()
+    - 終わりはいつまでか
+  - start = datetime(end.year - 1, end.month, end.day)
+    - ちょうど１年まから今日まで
+  - for stock in tech_list:
+    - globals()[stock] =  DataReader(stock, 'yahoo', start, end) 
+  - globalsはプログラムのコードを変数でおきかえられる
+    - type(AAPL):DataFrameになる
+    - APPL.describe() という感じでアクセスできる
+    - pythonの標準機能
+  - 説明：Open:はつね、HIgh：一番高値、Close：終値、Volume：出来高、AdjCloseなんかで調整した終値
+  - AAPL['Adj Close'].plot(legend = True, figsize=(10,4))
+  - AAPL['Volume'].plot(legend = True, figsize=(10,4))
+  - 
+  - 移動平均
+    - 10日とかの平均をグラフ化すること
+    - ma_day = [10,20,50]
+    - for ma in ma_day:
+      - column_name = 'MA {}'.format(ma)
+      - AAPL[column_name] = pd.rolling_mean(AAPL['Adj Close'],ma) #新しい列
+    - AAPL[ ['Adj Close', 'MA 10','MA 20','MA 50'] ].plot(subplots=False,figsize(10,4)
+      - 50日平均は遅れてくる
+    - AAPL['Daily Return'] = AAPL['Adj Close'].pct_change()
+      - 1日毎の終値がどれだけ前日に比べ変化したかの列を追加
+    - AAPL['Daily Return'].plot(figsize=(10,4), legent=True,linestyle='--' marger='o')
+    - sns.distplot(AAPL['Daily Return'].dropna(), bins=100,color='purple')
+      - 1年間でみるとどうなるのか？
+    - 複数会社のと扱う
+    - closing_df = DataReader(['AAPL','GOOG','MSFT','AMZN'],'yahoo',start,end)['Adj Close]
+    - tech_rets = closing_df.pct_change()
+      - 1日の移動平均データ
+    - sns.jointplot('GOOG','GOOG',tech_rets, kind='scatter', color='seagreen')
+      - 同じ会社で比較
+    - sns.jointplot('GOOG','MSFT',tech_rets, kind='scatter', color='seagreen')
+      - google,MS
+      - 非常によく相関していることが分かる
+        - piasonの相関係数
+    - ピアソンの相関係数：
+      - 相関が全くないと０
+      - どちらかが増えるとどちらが増える：正の値
+      - どちらかが増えるとどちらかが減る：負の値
+      - 数字だけで判断するのは気を付けなければならない
+        - 傾きだけじゃわからない。多少正なら、１とはんだん？
+        - 資料参照
+    - 
+

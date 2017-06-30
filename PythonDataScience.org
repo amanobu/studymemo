@@ -1145,3 +1145,67 @@
   - poll_avg = pd.concat([avg,std], axis=1)
   - poll_avg.columns = ['Average', 'STD']
   - 
+  - poll_df.plot(x='End Date', y=['Obama','Romney', 'Undecided'], marker='o',linestyle='')
+    - 最後のあたりは接戦になっている
+  - from datetime import datatime
+  - poll_df['Difference']=(poll_df.Obama - poll_df.Romney)/100
+    - ＋ｏｂａｍａリード、ーはロムニーさんリード
+    - 列を追加
+  - poll_df = poll_df.groupby(['Start Date'], as_index=False).mean()
+    - as_index=false:いまとおなじ0～ではじまるindexを保持するため
+    - 同じ日の世論調査の結果の表ができあがる
+  - fig = poll_df.plot('Start date','Difference',figsize(12,4),marker='o',linestyle='-')
+    - 支持率の差をプロット
+  - 2012年10月3と、10月11,10/22に討論会があった。１０月分をプロットしてみる
+  - poll_df[poll_df['Start Date'].apply(lambda x:x.startswith('2012-10'))]
+    - start dataが'2012-10'で始まるかどうか
+  - fig = poll_df.plot('Start date','Difference',figsize(12,4),marker='o',linestyle='-', xlim=(329,356))
+  - plt.axvline(x=330, linewidth=4, color='gray') #討論会の日に縦線
+  - plt.axvline(x=337, linewidth=4, color='gray') #討論会の日に縦線
+  - plt.axvline(x=347, linewidth=4, color='gray') #討論会の日に縦線
+    - (329,356)は2012年10月のindexの値
+  - 
+  - 寄付のデータ解析
+  - データは資料にあり
+  - donor_df = pd.read_csv('Election_Donor_Data.csv')
+    - 警告が出るがむし（カラムによっていろんなデータがミックスされているみたいな）
+  - 寄付金額後との件数
+  - donor_df['contb_receipt_amt'].value_counts()
+    - 金額事にその件数をカウント
+    - マイナスもある：寄付の払い戻しらしい
+  - donor_df['contb_receipt_amt'].value_counts().shape
+    - 種類の件数
+  - don_mean = donor_df['contb_receipt_amt'].mean()
+  - don_std = donor_df['contb_receipt_amt'].std()
+  - print('平均{:0.2f} 標準偏差{:0.2f}'.format(don_mean, don_std))
+    - 標準偏差がおかしい値
+      - マイナスの数字があったりするので。。。
+  - top_donor = donor_df['contb_receipt_amt'].copy()
+  - top_donor.sort()
+    - 結果、開きがあるので標準偏差がすごい値になる
+  - top_donor = top_donor[top_donor > 0] #マイナス削除する
+  - top_donor.sort()
+  - top_donor.value_counts.head(10)
+    - トップ10寄付金額の種類の多さ
+  - com_don = top_donor[top_donor < 2500] #2500doll以下の物を見て見る
+  - com_don.hist(bins=100)
+  - 
+  - 候補者の所属政党事の寄付
+  - candidates = donor_df.cand_nm.unique() # 候補者のリストをとる
+  - party_map ={....資料にあり...。名前:政党....}
+  - donor_df['Party'] = donor_df.cond_nm.map(party_map)
+    - 候補者の名前に応じて政党がセット
+  - donor_df = donor_df[donor_df.contb_receipt_amt> 0] #マイナスを消す
+  - donor_df.groupby('cand_nm')['contb_receipt_amt'].count()
+    - 候補者毎に何件寄付があるか
+  - cand_amount = donor_df.groupby('cand_nm')['contb_receipt_amt'].sum()
+    - 候補者毎の寄付額
+  - cand_amount.plot(kind='bar')
+    - 候補者毎の寄付額のグラフ
+  - donor_df.groupby('Party')['contb_receipt_amt'].sum().plot(kind='bar')
+    - 政党毎に寄付額
+    - 民主党は一人しか出さないらしい
+    - 共和党は複数
+  - occupation_df = donor_df.pivot_table('contb_receipt_amt',index='countbr_occupation',columns='Party',oggfunc='sum')
+    - oggfunc='sum':まとめる処理。この場合は合計
+    - 

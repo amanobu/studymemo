@@ -1208,4 +1208,57 @@
     - 共和党は複数
   - occupation_df = donor_df.pivot_table('contb_receipt_amt',index='countbr_occupation',columns='Party',oggfunc='sum')
     - oggfunc='sum':まとめる処理。この場合は合計
-    - 
+    - 職業毎、政党ごとの寄付金額
+    - occupation_df.shapeが45000行ぐらいある笑
+  - occupation_df = occupation_df[occupation_df.sum(1)>1000000]
+    - ちょっと寄付金額で絞って100万ドル以上で
+    - C.E.OとかCEOとか揺らぎがある
+    - occupation_df.drop(['～',...],axis=0,inplace=True)
+      - 不要なものを↑で消す
+    - occupation_df.loc['CEO'] = occupation_df.loc['CEO'] + occupation_df.loc['C.E.O']
+      - 一つにまとめる
+    - occupation_df.drop(['C.E.O'], inplace=True)
+      - こっちは削除
+  - occupation_df.plot(kind='barh',figsize(10,12) cmap='sismic')
+    - 横の棒グラフ
+    - 退職者の寄付がおおい
+    - 共和党はCEOが支持しているみたいなことがわかる
+- 71:SciKitLernによる機械学習入門
+  - 説明変数：パラメータ
+  - 目的変数：解
+- 72:線形回帰
+  - データの準備
+  - import numpy as np
+  - import pandas as pd
+  - from pandas import Series,DataFrame
+  - import matplotlib.pyplot as plt
+  - import seaborn as sns
+  - %matplotlib inline
+  - from sklearn.datasets import load_boston #ボストンの住宅データ
+  - boston = load_boston()
+  - boston_df = DataFrame(boston.data)
+  - boston_df.columns = boston.feature_names
+  - boston_df['Price'] = boston.target
+  - sns.lmplot('RM','Price', data = boston_df)
+    - RM:部屋の数
+    - この線の関数を求める
+- 73:線形回帰２
+  - まず変数１つでやってみる
+  - 2次元ARRAYにする必要があるので
+  - X = np.vstack(boston_df.RM)
+  - Y = boston_df.Price
+  - y = ax + b
+    - から y = Ap
+      - ベクトルの内積する必要があるらしい SciKitLern の仕様
+      - A  = [x 1] #横
+      - p = [a,b]#縦
+  - [ [ value, 1 ] for value in X]
+  - X = np.array([ [ value, 1 ] for value in X])
+  - a ,b = np.linalg.lstsq(X,Y)[0]
+    - np.linalg.lstsq(X,Y)の返りの0個目の要素をa,b
+  - plt.plot(boston_df.RM,boston_df.Price, 'o')
+  - x = boston_df.RM
+  - plt.plot(x, a*x+b, 'r')
+    - seabornで書いた線と同じような線を引いてみる
+  - 
+

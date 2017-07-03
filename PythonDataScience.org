@@ -1479,7 +1479,133 @@
   - from sklearn import metrics
   - metrics.accuracy_score(Y_test,predict)
   - sklearnのdefaultのKernelはRBFっていうやつらしい
+- 84:ナイーブベイズ分類
+  - Π：Σの掛け算バージョン
+  - arg max f(x)
+    - f(x) = 1 - |x| の場合、arg max f(x) = {0}
+  - ナイーブベイズ
+    - スパムメール分類に思いに使われている機械学習アルゴリズム
+    - y:目的変数
+    - x1～xn:説明変数
+    - P(y|x1....xn) = P(y)P(x1....xn|y) / P(x1...xn)
+    - すべての説明変数が互いに独立としているとすると
+    - P(y|x1....xn) = P(y)　Π P(xi|y) / P(x1...xn)
+      - iは1からnまで
+      - こう示せるので計算が簡単になる
+    - P(y|x1....xn)：そのクラスに属する確率が返ってくる
+      - で、arg max で最も大きな確率に割り当たるクラスに分類する
+  - ガルシアンナイーブベイズ
+    - 説明変数の連続値が正規分布に従うものとしてモデル化すると、計算が楽になる
+- 85:ナイーブベイズ分類2
+  - import pandas as pd
+  - from pandas import Series,DataFrame
+  - import matplotlib.pyplot as plt
+  - import seaborn as sns
+  - from sklearn import datasets
+  - from sklearn import metrics
+  - from sklearn.naive_bayes import GaussianNB
+  - iris = datasets.load_iris()
+  - X = iris.data
+  - Y = iris.target
+  - model = GaussianNB()
+  - from sklearn.cross_validation import train_test_split
+  - X_train,X_test,Y_train,Y_test = train_test_split(X,Y,random_state=0)
+  - model.fit(X_train,Y_train)
+  - predicted = model.predict(X_test)
+  - metrincs.accuracy_score(Y_test,predicted)
+- 86:決定木とランダムフォレスト
+  - 説明変数から判断条件によってばわい分けをしていく木
+  - 決定木をいくつもつくって集めるのでランダムフォレスト
+  - import pandas as pd
+  - import nampy as np
+  - import matplotlib.pyplot as plt
+  - import seaborn as sns
+  - from sklearn.datasets import make_blobs
+    - ダミーデータ生成用
+  - X,y = make_blobs(n_samples=500,centers=4,random_state=8,cluster_std=2.4)
+    - ダミーデータを作成
+    - centers:目的変数の何個の分類か？
+    - cluster_std:データのばらつきのパラメータ
+  - plt.figure(figsize=(10,10))
+  - plt.scatter(X[:,0], X[:,1],c=y, s=50, cmap='jet)
+  - from sklearn.tree import DecisionTreeClassifier
+  - 関数定義は資料にあり
+  - clf =  DecisionTreeClassifier(max_depth=2,random_state=0)
+    - Treeの深さは2まで
+  - visualize_tree(clf,X,y)
+  - clf =  DecisionTreeClassifier(max_depth=4,random_state=0)
+    - 深さ４にしてみる...がoverfitting
+  - overfittingを防ぐ方法として、ランダムフォレストらしい
+  - from sklearn.ensemble import RandomForestClassifier
+  - clf = RandomForestClassifier(n_eismatars=100,random_state=0)
+    - ランダムに100Tree作って試行する
+  - visualize_tree(clf,X,y,boundaries=False)
+    - boundaries=False:ランダムフォレストなのでしていするらしい
+  - 分類につかったが、回帰にも使える
+  - from sklearn.ensemble import RandomForestRegressor
+  - x = 10 * np.random.rand(100)
+  - def sin_model(x,sigma=0.2): #大きな波小さな波＋ノイズデータの生成
+    - noise = sigma * np.random.randn(len(x))
+    - return np.sin(5*x)+np.sin(0.5+x)+noize
+    - y = sin_model(x)
+  - plt.figure(figsize(16,8))
+  - plt.errorbar(x,y,0.1,fmt='o')
+    - 描いてみればわかるが、直線にfitさせるのはむずかしい
+  - xfit = np.linspace(0,10,1000)
+    - xの値を用意
+  - rfr = RandomForestRegressor(100)
+    - なかの木は100
+  - frf.fit(x[:None],y)
+    - 波データの学習
+  - yfit = rfr.predict(xfit[:,None])
+    - 予測値の計算
+  - 描画してみる
+  - ytrue = sim_model(xfit,0)
+    - 実際の値を計算し
+  - plt.figure(figsize(16,8))
+  - plt.errobar(x,y,0.1,fmt='o')
+  - plt.plot(xfit,yfit,'-r') #予測したあたいを赤
+  - plt.plot(xfit,ytrue,'-k',alpha=0.5) #実際の値
+  - ということで、ランダムフォレストは回帰にも使える
+- 90:離散一様分布
+  - 確率変数Xがn個の値を同じ同じ確率の時、Xは離散一様分布にしたがう
+  - 例：さいころの目
+  - import numpy as np
+  - import numpy.random import randn
+  - import pandas as pd
+  - from scipy import stats
+  - import matplotlib as mpl
+  - import matplotlib.pyplot as plt
+  - import seaborn as sns
+  - 仮想的なサイコロをつくりふるまいを示してみる
+  - roll_options = [1,2,3,4,5,6]
+  - tprob = 1 #確率の総和は１
+  - prob_roll = tprob / len(roll_options)
+  - uni_plot = plt.bar(roll_options,[prob_roll] + 6)
+  - 離散一様分布の場合平均は、最大＋最小/2
+  - 分散：平均からのずれの総和
+  - Scipyを使うと離散一様分布が簡単に作れる
+  - from scipy.stats import randint
+  - low,high=1,7
+  - mean ,var = randint.stats(low,high)
+  - 応用例として、ドイツの戦車の生産台数を推定する
+- 91:連続一様分布
   - 
+- 99:ベイズの定理
+  - P(A|B):Bが起こった条件でAが起こる確率
+  - ベイズの定理
+    - P(A|B) = P(B|A)P(A)  / P(B)
+  - 例：
+    - ボール１にはバニラクッキーが30、チョコレートが10個
+    - ボール２バニラクッキー、チョコレートが20個ずつ
+    - この時、どちらかのボールからクッキーを取り出した。そのクッキーがバニラだった場合、ボール１を選んだ確率は？
+      - V:バニラクッキーを選んだ事象
+      - B1ボール1を選ぶ事象
+      - P(B1|V) = P(V|B1)P(B1) / P(V)
+      - P(V|B1) = 30/40
+      - P(B1) = 1/2
+      - P(V) = 50/80
+      - よってP(B1|V) = 3/5
 
 
 

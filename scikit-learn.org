@@ -1,4 +1,12 @@
-- 
+- 3:
+  - from sklearn.datasets import make_blobs
+    - テストデータを作るのに便利な関数
+    - X, y = make_blobs(n_samples=20, # 20個生成
+      - n_features=2, # 2次元
+      - centers=2,    # クラスタ中心2個
+      - cluster_std = 2, # クラスタの大きさ（標準偏差）
+      - random_state=3   # 乱数種（再現用）
+      - )
 - 42:データのクリーニング
   - Nan・異常値の取り扱い
     - 取り除くか、工夫して値を埋める必要がある

@@ -181,5 +181,10 @@
   - sklearn.svn.LinearSVC
     - SVC(kernel='linear')とするのとほぼ同じだが、計算手法とがが違う為処理が早い
   - SVC:非線形で使うのがよい
-- 
-
+- 109:線形SVN
+  - LinearSVCのデフォルトはdual
+    - デフォルトdual=Trueが設定されている
+      - 特徴量が大きいとき
+    - サンプル数が多いときは以下の設定が
+      - dual=false :primalにするということらしい
+  - 

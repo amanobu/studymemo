@@ -27,7 +27,75 @@
   - それを組み合わせる
   - 画像によって大きさが変わるのでこの場合だと、ピクセル数で割ってどんな大きさでも同じ出力になるようにする
   - ただ、このままのデータでは使い物にならないので使わない
-
+- 45:特徴選択
+  - フィーチャーのうち、
+    - ほんとうに乱数
+    - 固定地
+  - だった場合、それはパラメータとしては不要となるのでそれを除外する方法
+  - import numpy as np
+  - from sklearn.datasets import load_breast_cancer
+  - data = load_breast_cancer()
+  - X = data.data
+  - y = data.target
+  - from sklearn.model_selection import ShuffleSplit
+  - ss = ShuffleSplit(n_splits=1,train_size=0.8,test_size=0.2,random_state=0)
+  - train_index,test_index = next(ss.split(X,y))
+  - X_train,X_test = X[train_index],X[test_index]
+  - y_train,y_test = Y[train_index],y[test_index]
+  - from sklearn.feature_selection iport SelectKBest
+    - 一番ベストなものをとってくる
+  - from sklearn.feature_selection iport chi2
+    - カイ二乗基準？
+  - skb = SelectKBest(chi2,k=20) #20個.もとのデータは３０個なのでそのうち20個
+  - skb.fit(X_train,y_train)
+  - X_train_new = skb.transform(X_train)
+    - これで、指定した20個をとってくる
+  - data.feature_names[skb.get_support()]
+    - これでどれが採用されたかわかる
+  - 20個は適当な値。じゃあ、何個が適切か？
+  - from sklearn import linear_model
+  - clf = linear_moel.LogisticRegresion()
+  - from sklearn_model_selection import StratifiedKFold
+  - k_range = np.arange(1,31)
+  - scores = []
+  - std = []
+  - for k in k_range:
+    - ss = StratifiedKFold(n_splits=10,shuffle=True,random_state=2)
+    - score = []
+    - for train_index, val_index in ss.split(X_train,y_train):
+      - X_train2,X_val = X[train_index],X[val_index]
+      - y_train2,y_val = Y[train_index],y[val_index]
+      - skb = SelectKBest(chi2,k=k)
+      - skb.fit(X_train2,y_train2)
+      - X_new_train2 = skb.transfrom(X_train2)
+      - X_new_val = skb.transfrom(X_val)
+      - clf.fit(X_new_train2,y_train2)
+      - score.append(clf.score(X_new_val,y_val))
+    - score.append(np.array(score).mean())
+    - std.append(np.array(socre).std())
+  - scores = np.array(scores)
+  - std = np.array(std)
+- 46:PCA
+  - import pandas as pd
+  - from pandas.tools.plotting import scatter_matrix
+  - df = pd.DataFrame(data.data[:,0:10],columns=data.feature_names[0:10])
+  - scatter_matrix(df,figsize(10,10))
+    - とりあえず特徴を見て見る
+    - 相関とかがわかる
+      - 直線になっている物とか
+  - X = data.data[:,[0,2]]
+  - y = data.target
+  - names = data.feature_names[ [0,2] ]
+  - from sklearn.decomposition import PCA
+  - pca = PCA()
+  - pca.fit(X)
+  - X_new = pca.transform(X)
+    - これでＯＫ
+  - plt.scatter(X_new[:,0]X_new[:,1])
+  - 
+- 
+- 
+- 
 - 89:SVM
   - 線形のでスコアを試して後、非線形のスコアを試すのがおすすめ
   - フィーチャースケーリングしないと計算が終わらないこともあるので注意
@@ -50,7 +118,7 @@
 - 95:癌データの識別
   - ランダムフォレストはスケーリングしてもあまり変わらない
     - 識別境界は条件によってきっちり分けられるので
-- 96:ロジスティック回帰のパラメータ調整
+- 98:ロジスティック回帰のパラメータ調整
   - Cのパラメータが重要
   - パラメータ調整するときによく使うのがGridSearchCVというオブジェクト
     - 格子上の点のところを点を探索していく
@@ -63,4 +131,35 @@
   - g.best_estimator_にはすでに一番いい識別器がセットされている
   - Cが大きすぎると過学習になる
     - 計算量が増える
+- 99-100:SVNのパラメタ調整
+  - またパラメータCの調整
+  - あとkernel:linearかrbfか
+  - n_jobs:並列計算の数:コア数がよい。-1だと自動的にＭＡＸのcoreを設定される
+  - verbose:細かい出力
+  - rbfにはgammaというパラメータもある
+- 101:KNNのパラメタ調整
+  - パラメータ:n_neighbors
+- 102:多層NNのパラメータ調整
+  - hidden_layer_size:
+  - activation:identity,logistic,relu,tanh
+  - beta_1:論文上では0.9（デフォルト）がおすすめらし
+  - bata_2:論文上では0.99（デフォルト）がおすすめらし
+  - alpha:
+  - ただ、組み合わせが爆発する（隠れ層増やすと...）
+  - なのでRandomizedSearchCV
+    - ランダムに抽出して試す
+    - 試行回数はn_iterで制御する
+    - つかいかたはGridSearchCVとほかは同じ
+- 103-105:パイプライン
+  - 一連の処理の流れを一気にやる
+  - estimators = [('pca', PCA(whiten=True)),('clf',LogisticRegression())]
+    - この順番で処理を実施する
+  - from sklearn.pipeline import PipeLine
+  - pipe = Pipeline(estimatiors)
+  - グリッドサーチの時は
+  - GridSearch(pipe,param)
+    - paramには
+      - {'clf__C':[1e-5,1e-3]}
+        - キーにどっちの処理の値かというのを識別させる為、識別子のインスタンス識別子__と設定する模様
+  - 
 

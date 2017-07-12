@@ -187,4 +187,69 @@
       - 特徴量が大きいとき
     - サンプル数が多いときは以下の設定が
       - dual=false :primalにするということらしい
-  - 
+- 110:
+  - 計算時間の見積もりは大事
+    - 少ない値でやってみて、じゃあ、本番データのオーダーでどのぐらいの時間がかかりそうか見積もる
+  - GridSearchをうかつに実施すると終わるか...
+- 111:確率勾配法SGD
+  - sklearn.linear_moel import SGDClassifier
+    - logss="log" #損失関数の指定。logはロジスティック回帰に相当するもの
+    - logss="hinge" linear SVN
+  - データが多いときに効いてくる
+  - ランダムにアップデートするデータを持ってきて学習する
+- 112:確率勾配法SGD
+  - coursera でやった
+  - 1STEPのアップデートで全パラメータの和をとらない様にするやつ
+  - サンプル数が少ないときは使わない
+  - サンプル数が多いときには使わないと...計算が終わらない
+- 113:確率勾配法SGD
+  - 確率勾配法では
+    - SVNのCのパラメータではなくalphaというパラメータ
+      - C=サンプル数/alphaという関係の値
+- 114:確率勾配法SGDのちいさいデータに適用してみると
+  - ランダムにサンプルデータをとってきてアップデートするので実行する毎に結果が変わる
+- 115:テキストのカテゴリ分類
+  - テキストデータをカテゴリに分類してみる
+  - from sklearn.datasets import fetch_20newsgroups
+  - 特徴ベクトル変換
+  - textの特徴変換するとsparse（0が多い？という事？）な結果となる
+    - 値があったら1、無かったら0みたいな値に変換するのがよい
+      - Binarizerというオブジェクトを使う
+- 
+
+- 前準備
+- データロード
+  - from sklearn.datasets import load_breast_cancer
+  - data = load_breast_cancer()
+  - X = data.data
+  - y = data.target
+- データのクリーニング
+  - NaNを埋める
+    - from sklearn.preprocessing import Imputer
+    - missing_value_to_mean = Imputer()
+    - X_new = missing_value_to_mean.transform(X)
+    - 
+    - missing_value_to_median = Imputer(strategy='median')
+    - X_new2 = missing_value_to_median.transform(X)
+- 特徴選択
+- 特徴量変換
+  - PCA
+- スケーリング
+- データ分割
+- 判定器選定
+- 小規模サンプルでトレーニング
+- 小規模サンプルで予測
+- 小規模サンプルで予測結果検証
+  - グラフを描く
+  - スコア
+    - from sklearn.metrics import accuracy_score
+    - from sklearn.metrics import confusion_matrix
+    - accuracy_score(y_test, y_pred)
+    - confusion_matrix(y_test, y_pred)
+  - まとめて計算
+    - from sklearn.metrics import classification_report
+    - print(classification_report(y_test, y_pred, digits=4))
+- 識別器再選定
+- 本番（大規模）サンプルでトレーニング
+- 本番（大規模）サンプルで予測
+- 本番（大規模）サンプルで予測結果検証

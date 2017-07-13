@@ -224,6 +224,12 @@
   - X = data.data
   - y = data.target
 - データのクリーニング
+  - Nanを削除する
+    - サンプル数が多いときには良いが...
+    - ~np.isnan(X[:, 1]) & ~np.isnan(X[:, 0])
+      - こんな感じでTrue,Falseのarrayを
+      - X1 = X[~np.isnan(X[:, 1]) & ~np.isnan(X[:, 0])]
+      - とか
   - NaNを埋める
     - from sklearn.preprocessing import Imputer
     - missing_value_to_mean = Imputer()
@@ -231,12 +237,71 @@
     - 
     - missing_value_to_median = Imputer(strategy='median')
     - X_new2 = missing_value_to_median.transform(X)
+  - 外れ値の変換
+    - こんな感じで、対象の物の条件をTrue/Falseで実施して...
+    - (abs(X1[:, 0]) < 10), (abs(X1[:, 1]) < 10) # 外れ値対策
+    - X2 = X1[(abs(X1[:, 0]) < 10) & (abs(X1[:, 1]) < 10)]
+    - y2 = y1[(abs(X1[:, 0]) < 10) & (abs(X1[:, 1]) < 10)]
 - 特徴選択
+  - from sklearn.feature_selection import SelectKBest
+  - from sklearn.feature_selection import chi2
+  - skb = SelectKBest(chi2, k=20)
+  - skb.fit(X_train, y_train)
+  - X_train_new = skb.transform(X_train)
+  - Y_train_new = sbk
+  - skb.get_support() #選択されたフィーチャー
 - 特徴量変換
   - PCA
+    - from sklearn.decomposition import PCA
+    - pca = PCA()
+    - pca.fit(X)
+    - X_new = pca.transform(X)
+  - PolynomialFeatures
+    - 
 - スケーリング
+  - 標準化
+    - from sklearn.preprocessing import StandardScaler
+    - scaler = StandardScaler()
+    - scaler.fit(X_train)
+    - X_train_scale = scaler.transform(X_train)
+    - X_test_scale = scaler.transform(X_test)
+  - 範囲矯正
+    - from sklearn.preprocessing import MinMaxScaler
+    - mmscaler = MinMaxScaler([-1,1])
+    - mmscaler.fit(X_train)
+    - X_train_mms = mmscaler.transform(X_train)
+    - X_test_mms  = mmscaler.transform(X_test)
+  - Normalization
+    - from sklearn.preprocessing import Normalizer
+    - normalizer = Normalizer()
+    - normalizer.fit(X_train)
+    - X_train_norm = normalizer.transform(X_train)
+    - X_test_norm  = normalizer.transform(X_test)
+  - PCA白色化？
 - データ分割
+  - 
+    - from sklearn.model_selection import ShuffleSplit
+    - ss = ShuffleSplit(n_splits=1,train_size=0.8,test_size=0.2,random_state=0)
+  - 
+    - from sklearn.model_selection import KFold
+    - ss = KFold(n_splits=10, shuffle=True)
+  - 
+    - from sklearn.model_selection import StratifiedKFold
+    - ss = StratifiedKFold(n_splits=10, shuffle=True)
+  - 
+    - from sklearn.model_selection import StratifiedShuffleSplit
+    - ss = StratifiedShuffleSplit(n_splits=1,train_size=0.95,test_size=0.05,random_state=0)
+    - 
+  - 
+    - from sklearn.model_selection import LeaveOneGroupOut
+    - loocv = LeaveOneGroupOut()
+    - train_index, test_index = loocv.split(X, y, group)
+  - 
+  - train_index, test_index = next(ss.split(X, y))
+  - X_train, X_test = X[train_index], X[test_index]
+  - y_train, y_test = y[train_index], y[test_index]
 - 判定器選定
+  - 
 - 小規模サンプルでトレーニング
 - 小規模サンプルで予測
 - 小規模サンプルで予測結果検証

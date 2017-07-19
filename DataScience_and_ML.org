@@ -1,0 +1,148 @@
+- 11
+  - 確率密度関数
+    - あるデータが特定の範囲に収まる確率
+    - 連続的
+  - 確率質量関数
+    - 確率密度関数の離散的値を取る
+- 12
+  - 正規分布
+    - import matplotlib.pyplot as plt
+    - from scipy.stats import norm
+    - x = xp.arange(-3,3.0.01)
+    - plt.plot(x,norm.pdf(x))
+  - 正規分布に沿って乱数を発生
+    - import numpy as np
+    - import matplotlib.pyplot as plt
+    - mu = 5.0
+    - sigma = 2.0
+    - values = np.random.normal(mu,sigma,10000)
+    - plt.hist(values,50)
+    - plt.show()
+  - 指数確率密度関数
+    - expのような確率密度関数
+    - from scipy.stats import expon
+    - import matplotlib.pyplot as plt
+    - x = np.arange(0,10,0.001)
+    - plt.plot(x,expon.pdf(x))
+  - 2項確率質量関数
+    - from scipy.stats import binom
+    - import matplotlib.pyplot as plt
+    - n,p = 10,0.5
+    - x = np.arange(0,10,0.001)
+    - plt.plot(x.binom.pmf(x,n,p))
+    - 離散的なやつ
+  - ポアソン確率質量関数
+    - 正規分布とは違う(何が違うんだ？）
+    - ウェブサイトの訪問者数が一日平均500人。550人となる確率は？
+    - from scipy.stats import poisson
+    - mu = 500
+    - x = np.arange(400,600,0.5)
+    - plt.plot(x,poisson.pmf(x,mu))
+    - グラフを描いてみればわかるが,0.2%ぐらい
+- 13 パーセンタイルとモーメント
+  - パーセンタイル
+    - データーセットにおいてX%の値がその値より下の点
+    - vals =np.random.normal(0,0.5,10000)
+    - np.percentile(vals,50)
+      - この値より下の値が全体の50%を占めるという意味の値となる
+  - モーメント
+    - 確率密度関数の形状の定量化
+    - 1次：平均
+    - 2次：分散
+    - 3次：歪度
+      - 分布がどれだけ偏っているか
+      - 右側に偏っているのであれば、負の値
+      - 左側なら正の値
+    - 4次：尖度
+      - ピークがどれだけとがっているか
+        - ピークが高ければこの値は大きい
+    - この1次から4次の値を使うことで、確率密度関数の形状を言い表せる
+    - vals = np.random.normal(0,0.5,10000)
+    - 1:np.mean(vals)
+    - 2:np.var(vals)
+    - 3:
+      - import scipy.stats as sp
+      - sp.skew(vals)
+    - 4:sp.kurtosis(vals)
+- 14:matplotlib
+  - from scipy.stats import norm
+  - import matplotlib.pyplot as plt
+  - import numpy as np
+  - x = np.arange(-3,3,0.001)
+  - 
+  - 軸の調整
+    - axes = plt.axes()
+    - 上のオブジェクトに対していろいろ設定を行っていく
+    - axes.xlim,ylim x軸、y軸の範囲を設定
+    - axes.set_xtics,set_yticsでメモリの付与
+  - グリッドの追加
+    - axes.grid()
+  - 線の種類
+    - plt.plot(x.norm.pdf(x),'b-')
+      - b:blue
+      - -:solid
+    - :点線
+    - r:赤
+  - 軸のラベルと凡例
+    - plt.xlabel('X軸の意味')
+    - plt.legent(['1番目のグラフの意味',...])
+  - XKCD
+    - 漫画調のグラフ
+    - plt.xkcd()
+      - だけでほぼOK
+  - 円グラフ
+    - values = [12,55,4,32,14]
+    - colors = ['r','g','b','c','m']
+    - explode = [0,0,0.2,0,0] #隙間
+    - labels = ['....'.....]
+    - plt.pic(values,colors=colors,label=labels,explod=explode)
+  - 棒グラフ
+    - plt.bar(範囲,値,色)
+  - 散布図
+    - plt.scatter(randn(500),randn(500))
+  - ヒストグラム
+    - plt.hist(...)
+  - 箱ひげ図
+    - 使わなそうだから後で
+- 15:共分散と相関
+  - 共分散
+    - 2組のデータセットの関係を表す数値
+    - ０に近い場合関係が浅い
+    - 正でも不でも大きい値であれば、関係が高い
+    - 計算
+      - 同じ長さのデータセットを用意
+      - それぞれの平均を引く
+      - それぞれのデータセットを高次元ベクトルとし、内積を計算
+      - それをサンプルの長さで割る
+  - 相関の計算
+    - 共分散を理解するのはむずかいしい
+    - 共分散をそれぞれのデータセットの標準偏差で割り、正規化
+    - -1なら逆相関
+    - 0：相関なし
+    - 1：完全な相関がある
+- 42:K近傍法(KNN)
+  - 新しい点が来たら、その近くにあるものだどちらかによって判定する
+- 47:強化学習
+  - 進捗情報（変化値）を学習しその後の判断の材料とすること？
+  - Q学習
+    - 強化学習の一つ
+      - 条件
+        - 環境における状態s
+        - とることが可能な行動a
+        - 各状態と行動に紐づいた値Q
+      - Qの値が0
+      - 空間を探索
+      - 悪い状態・行動が起こるたびにQを現象
+      - 逆ならばQを増加
+      - 次のQの計算
+        - Q(s,a) += discount*(reward(s,a)+Max(Q(s'))-Q(s,a)
+          - s':現在の状態
+          - s:前の状態
+          - なんとなくわかるような気がするけど、rewardとかdiscountとかなに？
+    - すべてのパターンの探索
+      - 全パターンの探索
+      - ある一定の閾値以下になったものを採用(εと言っていた)
+  - 強化学習の参考
+    - URLが資料に記載されているので参考
+    - パックマンのサンプルもある模様
+- 

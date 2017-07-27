@@ -350,3 +350,8 @@
     - os.system('ls -la') #コマンド実行
     - dir(os)
       - osが持っている関数が出力され
+- メモ
+  - sum = 1 + 2 + 3 + 4
+  - と実施後、sumというbuildin関数を使おうとするとおかしくなる
+  - buildin関数の様な変数を作らないか、delする
+    - del sum

@@ -1,3 +1,5 @@
+* 資料
+http://www.tsjshg.info/udemy/
 * Python Data Science
 - 3～:numpyアレイ
   - plt.imshow(array)

@@ -1,0 +1,24 @@
+- サーバ攻撃に対する典型的な流れ
+  - ターゲット特定
+    - ping/traceroute/nslookup/whois/host
+  - 情報収集：ポートスキャンで進入方法を考える
+    - nmap
+    - Zenmap
+  - 間接アタック:通信路の盗聴やパケットダンプ
+    - sniffing
+    - Wireshark
+  - 直接アタック:サーバに進入
+    - Fibber
+    - ssh
+    - crunch
+    - THC-Hydra
+    - Metasploit
+    - w,who
+    - Cain&Abel
+  - ハウスキーピング:進入の形跡を残さない
+    - ログを削除
+    - タイムスタンプの改竄
+    - バックドア
+    - Netcat
+    - Cryptcat
+- 

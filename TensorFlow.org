@@ -1,0 +1,36 @@
+- install
+  - CPU版
+    - pip install tensorflow
+  - GPU版
+    - pip install tensorflow-gpu
+- 最初のプログラム
+  - import tensorflow as tf
+  - hello = tf.constant('Hello.TensorFlow')
+  - sess = tf.Session()
+  - print(sess.run(hello))
+- 処理の流れ
+  - TensorFlowの読み込み
+  - 式を立てる：モデルを構築？
+  - セッション開始
+  - 実行
+- 多次元行列：Tensor
+- MINISTをやる
+  - SoftMAX
+    - すべて足すと１になるように計算する関数
+    - こんな関数をTensorFlowはたくさん定義されている
+  - クロスエントロピー
+    - 正解との差を表現するために
+  - y  = softmax(W・x + b)
+    - W:重み
+    - x:濃淡情報
+    - b:バイアス
+    - y:答え
+  - グラフ：Tensorのデータの流れの事を指している
+    - ｘ
+    - w
+    - →MatMul(W・x)
+    - b
+    - →Matmul(W・x) + b
+    - →SoftMAX
+    - ↑こんな感じで流れるから
+  - 

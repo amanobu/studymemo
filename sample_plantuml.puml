@@ -1,0 +1,53 @@
+@startuml
+skinparam {
+  activityFontSize 12
+  activityArrowFontSize 11
+  backgroundColor<<space>> LightGreen
+  actorFontStyle bold
+  actorFontSize 15
+}
+
+actor 宇宙人
+actor 地上の人
+
+node 火星 <<space>>{
+  folder 火星人{
+    file 火星人の足下
+  }
+}
+
+node 銀河 <<space>>{
+  folder 宇宙人の庭
+  node 箱船{
+    component 紙飛行機
+  }
+
+}
+
+node 地球 <<space>>{
+  node 地球表面{
+    folder 地球人の庭
+    component 宇宙船地球号
+  }
+  folder 地球人
+  folder 宇宙のゴミ捨て場
+  component 念力
+}
+
+火星人 --> 地球人:テレパシー
+地球人 --> 念力
+念力 --> 宇宙のゴミ捨て場
+宇宙のゴミ捨て場 --> 地球のコア
+
+宇宙船地球号 --> 地球人
+宇宙船地球号 --> 宇宙のゴミ捨て場
+
+紙飛行機 --> 地球人
+
+宇宙のゴミ捨て場 --> 宇宙人の庭
+宇宙のゴミ捨て場 --> 地球人の庭
+
+
+地上の人 --> 宇宙船地球号
+宇宙人 --> 紙飛行機
+@enduml

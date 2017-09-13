@@ -1,0 +1,74 @@
+@startuml
+header last updated:<2017/09/13 16:19:19>
+skinparam {
+  'タイトル・ヘッダー、フッター'
+  defaultFontName Meiryo UI
+  activityFontSize 12
+  activityArrowFontSize 11
+}
+
+|荷物置き場|
+start
+:何かしらの物品到着;
+if (野球の審判による\n<color:red>判定</color>) then (NO)
+|荷物置き場|
+if (ぶん投げる?) then (YES)
+:遠心力でぶん投げる;
+|弊社|
+:キャッチする;
+:捕まえる;
+note right:どんだけーこんだけー;
+stop
+ 
+else (NO)
+|荷物置き場|
+if (えーどうなっているの？) then (YES)
+:自宅に保管;
+note left:めめめめめめ;
+stop
+else (NO)
+:課金しちゃう;
+endif
+endif
+|弊社|
+:ハンバーガーを食べる;
+':てすとてすと
+
+if (宝くじ対象) then (NO)
+:対応検討;
+:対応;
+note right:あれこれそれどれ\nそのあとあのあとこのあと
+stop
+
+else (YES)
+:焼却炉に捨てる;
+note
+捨てたことをメモする
+end note
+:メモを焼く;
+|荷物置き場|
+:チェエエエエエック;
+stop
+endif
+
+else (YES)
+:チェックチェックチェック;
+note right:ここでチェックしくじったらあかんやん;
+split
+    :ほげほげ対応;
+    if (機械？その他？) then (そのた)
+      :海へ捨てる;
+      stop
+    else (機械)
+      :山へ捨てる;
+      note left:もりもり;
+      stop
+    endif
+split again
+    :はげはげの対応;
+    :レポート提出;
+    note right:どんだけー;
+    stop
+end split
+endif
+@enduml

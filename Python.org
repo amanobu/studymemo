@@ -358,3 +358,9 @@
   - と実施後、sumというbuildin関数を使おうとするとおかしくなる
   - buildin関数の様な変数を作らないか、delする
     - del sum
+- 仮想環境構築
+  - python3.6 -m venv test
+    - どうも↑のpythonは使いたい環境に併せて変更する
+    - testは環境を作るパス
+  - source test/bin/activate
+    - これで切替

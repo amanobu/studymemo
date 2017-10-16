@@ -364,3 +364,28 @@
     - testは環境を作るパス
   - source test/bin/activate
     - これで切替
+- 正規表現関係
+  - オプション：re.compile('ab*', re.IGNORECASE)　こんな感じでオプションを付けられる
+    - MULTILINE
+    - ASCII　などなど
+  - Matchオブジェクトのインスタンスメソッド
+    - group():マッチした文字列。引数にはグルーピングの指示
+    - start()/end():開始/終了位置
+    - span():start/endのタプル
+  - 普通に意識している正規表現の実装はsearch().match()ではない
+    - matchは文字列の最初からマッチしなければ値を返さないという実装
+  - 最小マッチ/最大マッチ
+    - 基本は最大マッチの模様
+      - re.match('<.*>','<html><head><title>Title</title>')
+    - 最小は、*?, +?, ?? または {m,n}?を利用
+      - re.match('<.*?>','<html><head><title>Title</title>')
+  - グルーピング
+    - m = re.search('(a(b)c)d','abcd')
+      - m.group():'abcd'
+      - m.group(1):'abc'
+      - m.groups():('abc', 'b')
+    - 名前付きグルーピングもある: (?P<name>...)
+      - group('name')で参照
+  - 置換
+    - re.sub('a+','hogehoge','aaa hagehage'):'hogehoge hhogehogegehhogehogege'
+    - re.sub('a+','hogehoge','aaa hagehage',1):'hogehoge hagehage'

@@ -114,7 +114,7 @@ http://www.tsjshg.info/udemy/
   - from pandas import Series
   - npのアレイとの違いはデータにインデックスがふられている
   - obj = Series([3,6,9,12])
-    - obj.value
+    - obj.values
       - array([3,6,9,12])
     - obj.index
   - ww2 = Series([1,2,3],index=['a','b','c'])
@@ -418,7 +418,7 @@ http://www.tsjshg.info/udemy/
   - n.concatenate([arr1,arr1],axis=0)
     - これは行（下）方向へ
   - ser1 = Series([0,1,2], index=['T','U','V'])
-  - ser1 = Series([3,4], index=['X','Y'])
+  - ser2 = Series([3,4], index=['X','Y'])
   - pd.concat([ser1,ser2])
     - 行の連結
   - pd.concat([ser1,ser2],axis=1)
@@ -1721,3 +1721,8 @@ http://www.tsjshg.info/udemy/
       - data.append(text)
   - あとはdataを成形していく
   - 
+- 追加
+  - DataFrameの行毎の繰り返し
+    - for index,row in df.iterrows():
+  - DataFrameの行毎に関数の適用df.apply(lambda x:apply_func(x) , axis=1)
+    - 各値にはapplymap()

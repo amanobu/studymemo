@@ -73,6 +73,9 @@
       - arg=[1,2,3,]
       - list(range(*arg))でOK
     - ディクショナリ型の場合は**argでわたす
+  - 複数の返却
+    - return (1,2,3)
+    - return [1,2,3]
   - lambda式
     - def make_incrementor(n):
       return lambda x:x+n

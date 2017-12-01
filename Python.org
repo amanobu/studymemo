@@ -365,6 +365,7 @@
   - python3.6 -m venv test
     - どうも↑のpythonは使いたい環境に併せて変更する
     - testは環境を作るパス
+    - pyvenv　でも同じかも
   - source test/bin/activate
     - これで切替
 - 正規表現関係

@@ -1,5 +1,7 @@
 * 資料
 http://www.tsjshg.info/udemy/
+データ変換はここが詳しい:https://qiita.com/richi40/items/6b3af6f4b00d62dbe8e1
+
 * Python Data Science
 - 3～:numpyアレイ
   - plt.imshow(array)
@@ -274,7 +276,7 @@ http://www.tsjshg.info/udemy/
     - データの個数や平均、などなどが一気に計算される
     - 非常に役に立つ模様
   - 株価のデータ解析
-    - import pandas_datareader  as pdweb
+    - import pandas_datareader as pdweb
     - import datetime
     - prices = pdweb.get_data_google(['CVX','XOM','BP'],start=datetime.datetime(2010,1,1),end=datetime.datetime(2013,1,1))['Close']
       - ['Adj Close']は終わりを示す記号らしい
@@ -725,7 +727,7 @@ http://www.tsjshg.info/udemy/
   - ２次元でも出来る
   - mean=[0,0] #原点を平均
   - cov=[ [1,0], [0,100] ]　#それぞれの方向への分散
-  - dataset2 = np.random.multivariate_nomal(mean,cov,1000) #ランダムに1000点
+  - dataset2 = np.random.multivariate_normal(mean,cov,1000) #ランダムに1000点
   - dframe = pd.DataFrame(dataset2,columns=['X','Y'])
   - sns.kdeplot(dframe)
     - 軸ごとにデータもわたせて
@@ -1726,3 +1728,6 @@ http://www.tsjshg.info/udemy/
     - for index,row in df.iterrows():
   - DataFrameの行毎に関数の適用df.apply(lambda x:apply_func(x) , axis=1)
     - 各値にはapplymap()
+  - pandas.read_csvする時に、勝手に型変換されて0001->1になってしまうときは
+    - read_csv(...,dtype={'対象の列':'データタイプ'}) とする
+

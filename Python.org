@@ -393,3 +393,24 @@
   - 置換
     - re.sub('a+','hogehoge','aaa hagehage'):'hogehoge hhogehogegehhogehogege'
     - re.sub('a+','hogehoge','aaa hagehage',1):'hogehoge hagehage'
+- 日本語の事
+  - unicode
+    - unicodeの文字列を示すコードポイント
+    - u'あ'
+    - type(unichr(12354)) -> type 'unicode'
+      - あ　= 12354
+    - このまま出力は出来ない
+      - sys.stdout.write(unichr(12354))はエラーとなる
+      - sys.stdout.write(unichr(12354).encode('utf-8'))　だとエラーにならない
+  - str
+    - byte配列として処理を行うという事だと思う
+    - b'あ'
+  - 出来るだけpython内のコード連携はunicodeで作るようにしておかないと嫌らしい挙動を起こすので注意
+  - str→unicode:デコード
+  - str←unicode:エンコード
+- f文字列
+  - 文字列の中に変数値を埋め込む一つのやり方
+  - f'hello'
+    - 'hello'
+  - f'100+1={100+1}'
+    - '100+1=101' → {100+1}の部分が評価され埋め込まれる

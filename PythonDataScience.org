@@ -1722,7 +1722,6 @@ http://www.tsjshg.info/udemy/
       - text = td.find(text=True)
       - data.append(text)
   - あとはdataを成形していく
-  - 
 - 追加
   - DataFrameの行毎の繰り返し
     - for index,row in df.iterrows():
@@ -1730,4 +1729,15 @@ http://www.tsjshg.info/udemy/
     - 各値にはapplymap()
   - pandas.read_csvする時に、勝手に型変換されて0001->1になってしまうときは
     - read_csv(...,dtype={'対象の列':'データタイプ'}) とする
-
+  - 値の置き換え
+    - df['対象列'].replace('\.0','', regex=True, inplace=True)
+      - 4.0を4に変換する
+  - DataFrameの比較
+    - result = df1.values == df2.values で可能セル毎のT/Fが返却される
+    - result.all(axis=1)とすると、行毎に集計する
+    - ~resultはT/Fの反転が出来る
+    - itertools.compressを使えばT/Fの値でFilter出来る
+  - SJISファイルをPandasでロードする際、①とかが有る場合はencoding='shift_jisx0213'と指定するとロード出来る可能性がある
+  - DataFrameの値によって抽出する
+    - 例えば、項目１列の値が1_で始まるのだけを抽出する場合
+      - df[df['項目１'].str.startswith('1_')]

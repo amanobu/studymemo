@@ -332,3 +332,7 @@
     - 特定：git stash drop stash名
     - 全部：git stash clear
 - 完
+- その他
+  - git config user.name "なまえ"
+    - --global　を付けるとシステム全体に
+  - git config user.email "メアド"
